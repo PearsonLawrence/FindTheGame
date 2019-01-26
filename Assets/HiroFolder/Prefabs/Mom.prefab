@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 730317996431353271}
   - component: {fileID: 730317996431353225}
   - component: {fileID: 730317997748886123}
-  m_Layer: 20
+  m_Layer: 10
   m_Name: Mom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +138,7 @@ GameObject:
   m_Component:
   - component: {fileID: 730317997576214780}
   - component: {fileID: 730317997576214783}
-  m_Layer: 20
+  m_Layer: 10
   m_Name: aooni
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -246,7 +246,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
       propertyPath: m_Layer
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -304,8 +304,7 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 5
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2300000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
 --- !u!1 &730317997784285195 stripped
 GameObject:
