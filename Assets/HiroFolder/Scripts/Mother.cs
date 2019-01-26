@@ -253,186 +253,42 @@ public class Mother : MonoBehaviour
     /// </summary>
     private void CheckNoise()
     {
-        //if(mSoundDirectionComponent.CurrentNoiseStress > 0.0f)
-        //{
-        //    mOldMoveState = mCurrentMoveState;
-        //    mCurrentMoveState = MoveState.cNoiseReaction;
-        //    mDoingNoiseLevelAction = (NoiseLevel)mSoundDirectionComponent.CurrentNoiseLevel;
-        //    switch(mDoingNoiseLevelAction)
-        //    {
-        //        case NoiseLevel.cStop:
-        //        {
-        //            mNoiseReactionCounter = new Counter(mNoseReactionStopTime, -1.0f);
-        //            break;
-        //        }
-        //        case NoiseLevel.cLookAround:
-        //        {
-        //            mNoiseReactionCounter = new Counter(mNoiseReactionLookAroundTime, -1.0f);
-        //            break;
-        //        }
-        //
-        //    }
-        //}
-    }
-
-    private void NoiseReaction()
-    {
-        switch(mDoingNoiseLevelAction)
+        if(mSoundDirectionComponent.CurrentNoiseStress > 0.0f)
         {
-            case NoiseLevel.cNone:
+            mCurrentMoveState = MoveState.cNoiseReaction;
+            var noise_stress = mSoundDirectionComponent.CurrentNoiseStress > mSoundDirectionComponent.CurrentNoiseLevel ? mSoundDirectionComponent.CurrentNoiseStress : mSoundDirectionComponent.CurrentNoiseLevel;
+            switch((int)noise_stress)
             {
-                break;
-            }
+                case (int)NoiseLevel.cNone:
+                case (int)NoiseLevel.cLookAround:
+                case (int)NoiseLevel.cMoveToPointInterst:
+                {
+                    break;
+                }
 
-            case NoiseLevel.cStop:
-            {
-                //StartCoroutine(NoiseStopAction());
-                StopAction();
-                break;
-            }
-
-            case NoiseLevel.cLookAround:
-            {
-                //StartCoroutine(NoiseLookAroundAction());
-                break;
-            }
-
-            case NoiseLevel.cMoveToPointInterst:
-            {
-                //StartCoroutine(NoiseMoveToPointInterstAction());
-                break;
-            }
-
-            case NoiseLevel.cMoveToPointInterstQuickly:
-            {
-                //StartCoroutine(NoiseMoveToPointInterstQuicklyAction());
-                break;
+                case (int)NoiseLevel.cMoveToPointInterstQuickly:
+                {
+                    break;
+                }
             }
         }
-    }
-
-    /// <summary>
-    /// ConeとRayCastでプレイヤーを見つけているかチェック
-    /// </summary>
-    /// <returns></returns>
-    private bool IsFindPlayer()
-    {
-        return false;
-    }
-
-    private void StopAction()
-    {
-        mNoiseReactionCounter.Update();
-        if(mNoiseReactionCounter.IsUnderZero())
+        else
         {
             mCurrentMoveState = MoveState.cOrderPatrol;
         }
     }
 
-    //*********************************************************************************************
-    //NoiseReactionFunctions
-
-    private IEnumerator NoiseStopAction()
+    //音によるリアクション
+    private void NoiseReaction()
     {
-        if(mIsNoiseActionStopCoroutine)
-        {
-            yield break;
-        }
-        mIsNoiseActionStopCoroutine = true;
-        mNoiseReactionCounter = new Counter(mNoseReactionStopTime, -1.0f);
-        while (!mNoiseReactionCounter.IsUnderZero())
-        {
-            Debug.Log("Now noise reaction 'Stop' playing.");
-            mNoiseReactionCounter.Update();
-            yield return null;
-        }
-        //var current_state = mCurrentMoveState;
-        //mCurrentMoveState = mOldMoveState;
-        //mOldMoveState = current_state;
 
-        mCurrentMoveState = MoveState.cOrderPatrol;
-        mIsNoiseActionStopCoroutine = false;
-        yield break;
-    }
-    private IEnumerator NoiseLookAroundAction()
-    {
-        if(mIsNoiseActionLookAroundCoroutine)
-        {
-            yield break;
-        }
-        mIsNoiseActionLookAroundCoroutine = true;
-        mNoiseReactionCounter = new Counter(mNoiseReactionLookAroundTime, -1.0f);
-        while (!mNoiseReactionCounter.IsUnderZero())
-        {
-            Debug.Log("Now noise reaction 'LookAround' playing.");
-            mNoiseReactionCounter.Update();
-            yield return null;
-        }
-        //var current_state = mCurrentMoveState;
-        //mCurrentMoveState = mOldMoveState;
-        //mOldMoveState = current_state;
-
-        mCurrentMoveState = MoveState.cOrderPatrol;
-        mIsNoiseActionLookAroundCoroutine = false;
-        yield break;
+        mCurrentTargetPos = mSoundDirectionComponent.PointofInterest;
+        mNavMeshAgent.destination = mCurrentTargetPos;
     }
 
-    private IEnumerator NoiseMoveToPointInterstAction()
+    private void SetNavMeshDestination(Vector3 target_pos, float move_speed)
     {
-        if(mIsNoiseActionMoveToPointInterstCoroutine)
-        {
-            yield break;
-        }
-        mIsNoiseActionMoveToPointInterstCoroutine = true;
-        var infinity_check = 0;
-        while (Vector3.Distance(transform.position, mCurrentTargetPos) < cReachDistance)
-        {
-            Debug.Log("Now noise reaction 'Stop' playing.");
-            mNoiseReactionCounter.Update();
-
-            if(infinity_check > 100)
-            {
-                break;
-            }
-            ++infinity_check;
-            yield return null;
-        }
-        //var current_state = mCurrentMoveState;
-        //mCurrentMoveState = mOldMoveState;
-        //mOldMoveState = current_state;
-
-        mCurrentMoveState = MoveState.cOrderPatrol;
-        mIsNoiseActionMoveToPointInterstCoroutine = false;
-        yield break;
-    }
-
-    private IEnumerator NoiseMoveToPointInterstQuicklyAction()
-    {
-        if(mIsNoiseActionMoveToPointInterstQuicklyCoroutine)
-        {
-            yield break;
-        }
-        mIsNoiseActionMoveToPointInterstQuicklyCoroutine = true;
-        while (Vector3.Distance(transform.position, mCurrentTargetPos) < cReachDistance)
-        {
-            var infinity_check = 0;
-            Debug.Log("Now noise reaction 'Stop' playing.");
-            mNoiseReactionCounter.Update();
-
-            if(infinity_check > 100)
-            {
-                break;
-            }
-            ++infinity_check;
-            yield return null;
-        }
-        //var current_state = mCurrentMoveState;
-        //mCurrentMoveState = mOldMoveState;
-        //mOldMoveState = current_state;
-
-        mCurrentMoveState = MoveState.cOrderPatrol;
-        mIsNoiseActionMoveToPointInterstQuicklyCoroutine = false;
-        yield break;
+        
     }
 
     //*********************************************************************************************
