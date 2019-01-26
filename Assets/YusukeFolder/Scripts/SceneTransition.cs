@@ -7,6 +7,7 @@ public class SceneTransition : MonoBehaviour
 {
 
     public string scene;
+    public bool isUnlock;
 
     void Start()
     {
@@ -16,7 +17,7 @@ public class SceneTransition : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.anyKey)
+        if (Input.anyKey && isUnlock)
         {
             LoadScene();
         }
@@ -24,7 +25,6 @@ public class SceneTransition : MonoBehaviour
 
     private void LoadScene()
     {
-
         SceneManager.LoadScene(scene);
     }
 }

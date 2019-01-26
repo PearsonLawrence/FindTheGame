@@ -15,19 +15,19 @@ public class ImageState : MonoBehaviour
     {
         ThisImage = this.GetComponent<Image>();
         LightDown();
+
+        updateTime = DateTime.Now;
+        testStart = true;
     }
 
     //Test
     private DateTime updateTime;
     bool test = false;
-    bool test2 = false;
+    bool testStart = false;
     void Update()
     {
-        if(updateTime == null)
-        {
-            updateTime = DateTime.Now;
+        if(!testStart)
             return;
-        }
 
         DateTime nowTime = DateTime.Now;
         double diff = (nowTime - updateTime).TotalSeconds;
