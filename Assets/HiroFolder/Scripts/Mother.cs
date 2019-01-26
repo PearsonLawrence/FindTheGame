@@ -8,15 +8,31 @@ public class Mother : MonoBehaviour
     //*********************************************************************************************
     //メンバ変数
 
-    public float mMoveSpeed = 0.4f;
-    public float mTargetReachedStopTime = 1.0f;
+    public float                        mMoveSpeed = 0.4f;
+    public float                        mTargetReachedStopTime = 1.0f;
+    public float                        mNoseReactionStopTime = 1.5f;
+    public float                        mNoiseReactionLookAroundTime = 5.0f;
+    public float                        mNosieReactionMoveToPointInterstSpeed = 0.4f;
+    public float                        mNosieReactionMoveToPointInterstQuicklySpeed = 1.0f;
 
-    private Rigidbody mRigidbody;
-    private NavMeshAgent mNavMeshAgent;
-    private Vector3 mCurrentTargetPos = Vector3.zero;
-    private Dictionary<int, Vector3> mTargetPoints = new Dictionary<int, Vector3>();
-    private Counter mTargetReachedStopCounter;
-    //private tig
+    private Rigidbody                   mRigidbody;
+    private NavMeshAgent                mNavMeshAgent;
+    private SoundDetectionComponent     mSoundDirectionComponent;
+    private Vector3                     mCurrentTargetPos = Vector3.zero;
+    private Dictionary<int, Vector3>    mTargetPoints = new Dictionary<int, Vector3>();
+    private Counter                     mTargetReachedStopCounter;
+    private Counter                     mNoiseReactionCounter;
+
+    //NoiseLevel
+    public enum NoiseLevel
+    {
+        cNone = 0,
+        cStop = 1,
+        cLookAround = 2,
+        cMoveToPointInterst = 3,
+        cMoveToPointInterstQuickly = 4
+    }
+    public NoiseLevel mDoingNoiseLevelAction = NoiseLevel.cNone;
 
     //State
     public enum MoveState
@@ -24,14 +40,19 @@ public class Mother : MonoBehaviour
         cNone,
         cOrderPatrol,        //目標点を順番に
         cRandomPatrol,       //目標点をランダムに
-        cToTarget,           //目的の場所へ
-        cVigilance,          //警戒
+        cNoiseReaction,      //音に応じたリアクション
         cFindPlayer          //プレイヤー発見
     }
     public MoveState mCurrentMoveState = MoveState.cOrderPatrol;
+    public MoveState mOldMoveState = MoveState.cOrderPatrol;
     private int mOrderIndex = 0;
 
     private const float cReachDistance = 2.0f;
+
+    private bool mIsNoiseActionStopCoroutine = false;
+    private bool mIsNoiseActionLookAroundCoroutine = false;
+    private bool mIsNoiseActionMoveToPointInterstCoroutine = false;
+    private bool mIsNoiseActionMoveToPointInterstQuicklyCoroutine = false;
 
     //*********************************************************************************************
     //Unityデフォルト関数
@@ -48,6 +69,11 @@ public class Mother : MonoBehaviour
         {
             Debug.LogError("Can't find nav mesh agent.");
         }
+        mSoundDirectionComponent = gameObject.GetComponent<SoundDetectionComponent>();
+        if(!mSoundDirectionComponent)
+        {
+            Debug.LogError("Can't find sound direction component.");
+        }
 
         //目標点リストの作成
         var points = GameObject.FindGameObjectsWithTag("TargetPoint");
@@ -56,9 +82,8 @@ public class Mother : MonoBehaviour
             var key = int.Parse(point.name);
             mTargetPoints.Add(key, point.transform.position);
         }
-        //*** Stateに応じて初期の目標点をかえるように 分離できそう
-        InitMove();
 
+        InitMove();
 
         mTargetReachedStopCounter = new Counter(mTargetReachedStopTime, -1.0f);
     }
@@ -66,6 +91,7 @@ public class Mother : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        CheckNoise();
         WatchNowState();
     }
 
@@ -112,13 +138,10 @@ public class Mother : MonoBehaviour
                 break;
             }
 
-            case MoveState.cVigilance:
+            //ノイズリアクション
+            case MoveState.cNoiseReaction:
             {
-                break;
-            }
-
-            case MoveState.cToTarget:
-            {
+                NoiseReaction();
                 break;
             }
 
@@ -154,13 +177,9 @@ public class Mother : MonoBehaviour
                 break;
             }
 
-            case MoveState.cToTarget:
+            case MoveState.cNoiseReaction:
             {
-                break;
-            }
-
-            case MoveState.cVigilance:
-            {
+                NoiseReaction();
                 break;
             }
 
@@ -228,12 +247,162 @@ public class Mother : MonoBehaviour
         return mTargetPoints[mOrderIndex];
     }
 
+    /// <summary>
+    /// 聴覚チェック
+    /// </summary>
+    private void CheckNoise()
+    {
+        if(mSoundDirectionComponent.CurrentNoiseStress > 0.0f)
+        {
+            mOldMoveState = mCurrentMoveState;
+            mCurrentMoveState = MoveState.cNoiseReaction;
+            mDoingNoiseLevelAction = (NoiseLevel)mSoundDirectionComponent.CurrentNoiseLevel;
+        }
+    }
+
+    private void NoiseReaction()
+    {
+        switch(mDoingNoiseLevelAction)
+        {
+            case NoiseLevel.cNone:
+            {
+                break;
+            }
+
+            case NoiseLevel.cStop:
+            {
+                mNoiseReactionCounter = new Counter(mNoseReactionStopTime, -1.0f);
+                StartCoroutine(NoiseStopAction());
+                break;
+            }
+
+            case NoiseLevel.cLookAround:
+            {
+                mNoiseReactionCounter = new Counter(mNoiseReactionLookAroundTime, -1.0f);
+                StartCoroutine(NoiseLookAroundAction());
+                break;
+            }
+
+            case NoiseLevel.cMoveToPointInterst:
+            {
+                StartCoroutine(NoiseMoveToPointInterstAction());
+                break;
+            }
+
+            case NoiseLevel.cMoveToPointInterstQuickly:
+            {
+                StartCoroutine(NoiseMoveToPointInterstQuicklyAction());
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// ConeとRayCastでプレイヤーを見つけているかチェック
+    /// </summary>
+    /// <returns></returns>
     private bool IsFindPlayer()
     {
-
-
-
         return false;
+    }
+
+    //*********************************************************************************************
+    //NoiseReactionFunctions
+
+    private IEnumerator NoiseStopAction()
+    {
+        if(mIsNoiseActionStopCoroutine)
+        {
+            yield break;
+        }
+        mIsNoiseActionStopCoroutine = true;
+        while(!mNoiseReactionCounter.IsUnderZero())
+        {
+            Debug.Log("Now noise reaction 'Stop' playing.");
+            mNoiseReactionCounter.Update();
+            yield return null;
+        }
+        var current_state = mCurrentMoveState;
+        mCurrentMoveState = mOldMoveState;
+        mOldMoveState = current_state;
+        mIsNoiseActionStopCoroutine = false;
+        yield break;
+    }
+    private IEnumerator NoiseLookAroundAction()
+    {
+        if(mIsNoiseActionLookAroundCoroutine)
+        {
+            yield break;
+        }
+        mIsNoiseActionLookAroundCoroutine = true;
+        while (!mNoiseReactionCounter.IsUnderZero())
+        {
+            Debug.Log("Now noise reaction 'LookAround' playing.");
+            mNoiseReactionCounter.Update();
+            yield return null;
+        }
+        var current_state = mCurrentMoveState;
+        mCurrentMoveState = mOldMoveState;
+        mOldMoveState = current_state;
+
+        mIsNoiseActionLookAroundCoroutine = false;
+        yield break;
+    }
+
+    private IEnumerator NoiseMoveToPointInterstAction()
+    {
+        if(mIsNoiseActionMoveToPointInterstCoroutine)
+        {
+            yield break;
+        }
+        mIsNoiseActionMoveToPointInterstCoroutine = true;
+        var infinity_check = 0;
+        while (Vector3.Distance(transform.position, mCurrentTargetPos) < cReachDistance)
+        {
+            Debug.Log("Now noise reaction 'Stop' playing.");
+            mNoiseReactionCounter.Update();
+
+            if(infinity_check > 100)
+            {
+                break;
+            }
+            ++infinity_check;
+            yield return null;
+        }
+        var current_state = mCurrentMoveState;
+        mCurrentMoveState = mOldMoveState;
+        mOldMoveState = current_state;
+
+        mIsNoiseActionMoveToPointInterstCoroutine = false;
+        yield break;
+    }
+
+    private IEnumerator NoiseMoveToPointInterstQuicklyAction()
+    {
+        if(mIsNoiseActionMoveToPointInterstQuicklyCoroutine)
+        {
+            yield break;
+        }
+        mIsNoiseActionMoveToPointInterstQuicklyCoroutine = true;
+        while (Vector3.Distance(transform.position, mCurrentTargetPos) < cReachDistance)
+        {
+            var infinity_check = 0;
+            Debug.Log("Now noise reaction 'Stop' playing.");
+            mNoiseReactionCounter.Update();
+
+            if(infinity_check > 100)
+            {
+                break;
+            }
+            ++infinity_check;
+            yield return null;
+        }
+        var current_state = mCurrentMoveState;
+        mCurrentMoveState = mOldMoveState;
+        mOldMoveState = current_state;
+
+        mIsNoiseActionMoveToPointInterstQuicklyCoroutine = false;
+        yield break;
     }
 
     //*********************************************************************************************
@@ -282,7 +451,7 @@ public class Mother : MonoBehaviour
     }
 
     //*********************************************************************************************
-    //デバッグ表示
+    //Debug drawing
 
     private void OnDrawGizmos()
     {
