@@ -87,7 +87,7 @@ public class Mother : MonoBehaviour
                     if(mTargetReachedStopCounter.IsUnderZero())
                     {
 
-                        mCurrentTargetPos = CalcOrderPos();
+                        //mCurrentTargetPos = CalcOrderPos();
                     }
                 }
                 mNavMeshAgent.destination = mCurrentTargetPos;
@@ -173,10 +173,10 @@ public class Mother : MonoBehaviour
         return target_pos;
     }
     
-    private Vector3 CalcOrderPos()
-    {
-        
-    }
+    //private Vector3 CalcOrderPos()
+    //{
+    //    if(tra)
+    //}
 
     /// <summary>
     /// 時間を計るカウンター
