@@ -18,6 +18,7 @@ public class NoiseComponent : MonoBehaviour
 
     public ParticleSystem SoundWave;
 
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +32,7 @@ public class NoiseComponent : MonoBehaviour
         spherecollider.radius += Time.deltaTime * ExpandSpeed;
         NoiseLevel -= Time.deltaTime * decreasespeed;
 
-        if(NoiseLevel <= 0)
+        if(NoiseLevel <= 0 || spherecollider.radius > MaxSize)
         {
             Destroy(gameObject);
         }
@@ -39,7 +40,17 @@ public class NoiseComponent : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        
+        SoundDetectionComponent TempSoundDetect = other.GetComponent<SoundDetectionComponent>();
+        if (TempSoundDetect)
+        {
+            if(TempSoundDetect.CurrentNoiseLevel < NoiseLevel)
+            {
+                TempSoundDetect.CurrentNoiseLevel = NoiseLevel;
+                TempSoundDetect.PointofInterest = transform.position;
+               
+            }
+            TempSoundDetect.CurrentNoiseStress += NoiseLevel;
+        }
     }
 
     // Update is called once per frame

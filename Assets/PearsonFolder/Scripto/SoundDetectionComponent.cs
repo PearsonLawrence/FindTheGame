@@ -5,46 +5,34 @@ using UnityEngine;
 public class SoundDetectionComponent : MonoBehaviour
 {
 
-    public bool IsPlayer;
+    public bool IsPlayer = false;
 
-    public float ListenRadius;
+    //public float ListenRadius;
 
+    public float CurrentNoiseLevel;
+    //Important
 
-    public List<NoiseComponent> CurrentNoises;
+    public float CurrentNoiseStress; //??
+    public float StressDecreaseModifier = .2f;
 
-    public NoiseComponent LoudestNoise;
+  //  public NoiseComponent LoudestNoise;
 
     public Vector3 PointofInterest;
+    //Important
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        NoiseComponent Temp = other.GetComponent<NoiseComponent>();
-        if(Temp)
-        {
-            CurrentNoises.Add(Temp);
-        }
-    }
-
-    public void CheckNoiseLevel()
-    {
-        for(int i = 0; i < CurrentNoises.Capacity; i++)
-        {
-            switch(CurrentNoises[i].NoiseLevel)
-            {
-                case 0:
-
-                    break;
-            }
-        }
-    }
+    
     // Update is called once per frame
     void Update()
     {
-        
+        if (!IsPlayer)
+        {
+            CurrentNoiseStress -= Time.deltaTime * StressDecreaseModifier;
+            CurrentNoiseStress = Mathf.Clamp(CurrentNoiseStress, 0, 5);
+        }
     }
 }
