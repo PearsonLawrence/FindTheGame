@@ -8,12 +8,18 @@ public class Mother : MonoBehaviour
     //*********************************************************************************************
     //メンバ変数
 
-    public float                        mMoveSpeed = 0.4f;
+    public float                        mMoveSpeed = 1.0f;
+
+    [Space(10)]
     public float                        mTargetReachedStopTime = 1.0f;
-    public float                        mNoseReactionStopTime = 1.5f;
+
+    [Space(10)]
+    public float                        mNoiseReactionStopTime = 1.5f;
     public float                        mNoiseReactionLookAroundTime = 5.0f;
-    public float                        mNosieReactionMoveToPointInterstSpeed = 0.4f;
-    public float                        mNosieReactionMoveToPointInterstQuicklySpeed = 1.0f;
+    public float                        mNosieReactionMoveToPointInterstSpeed = 1.0f;
+    public float                        mNosieReactionMoveToPointInterstQuicklySpeed = 2.0f;
+
+    [Space(10)]
     public string                       mGameOverSceneName;
 
     private Rigidbody                   mRigidbody;
@@ -33,7 +39,7 @@ public class Mother : MonoBehaviour
         cMoveToPointInterst = 3,
         cMoveToPointInterstQuickly = 4
     }
-    public NoiseLevel mDoingNoiseLevelAction = NoiseLevel.cNone;
+    private NoiseLevel mDoingNoiseLevelAction = NoiseLevel.cNone;
 
     //State
     public enum MoveState
@@ -44,16 +50,10 @@ public class Mother : MonoBehaviour
         cNoiseReaction,      //音に応じたリアクション
         cFindPlayer          //プレイヤー発見
     }
-    public MoveState mCurrentMoveState = MoveState.cOrderPatrol;
-    public MoveState mOldMoveState = MoveState.cOrderPatrol;
+    private MoveState mCurrentMoveState = MoveState.cOrderPatrol;
     private int mOrderIndex = 0;
 
     private const float cReachDistance = 2.0f;
-
-    private bool mIsNoiseActionStopCoroutine = false;
-    private bool mIsNoiseActionLookAroundCoroutine = false;
-    private bool mIsNoiseActionMoveToPointInterstCoroutine = false;
-    private bool mIsNoiseActionMoveToPointInterstQuicklyCoroutine = false;
 
     //*********************************************************************************************
     //Unityデフォルト関数
@@ -117,7 +117,7 @@ public class Mother : MonoBehaviour
                         mCurrentTargetPos = CalcOrderPos();
                     }
                 }
-                mNavMeshAgent.destination = mCurrentTargetPos;
+                SetNavMeshDestination(mCurrentTargetPos, mMoveSpeed);
 
                 break;
             }
@@ -134,7 +134,7 @@ public class Mother : MonoBehaviour
                         mCurrentTargetPos = CalcRandomPos();
                     }
                 }
-                mNavMeshAgent.destination = mCurrentTargetPos;
+                SetNavMeshDestination(mCurrentTargetPos, mMoveSpeed);
 
                 break;
             }
@@ -257,20 +257,7 @@ public class Mother : MonoBehaviour
         {
             mCurrentMoveState = MoveState.cNoiseReaction;
             var noise_stress = mSoundDirectionComponent.CurrentNoiseStress > mSoundDirectionComponent.CurrentNoiseLevel ? mSoundDirectionComponent.CurrentNoiseStress : mSoundDirectionComponent.CurrentNoiseLevel;
-            switch((int)noise_stress)
-            {
-                case (int)NoiseLevel.cNone:
-                case (int)NoiseLevel.cLookAround:
-                case (int)NoiseLevel.cMoveToPointInterst:
-                {
-                    break;
-                }
-
-                case (int)NoiseLevel.cMoveToPointInterstQuickly:
-                {
-                    break;
-                }
-            }
+            mDoingNoiseLevelAction = (NoiseLevel)noise_stress;
         }
         else
         {
@@ -281,14 +268,31 @@ public class Mother : MonoBehaviour
     //音によるリアクション
     private void NoiseReaction()
     {
+        switch(mDoingNoiseLevelAction)
+        {
+            case NoiseLevel.cNone:
+            case NoiseLevel.cStop:
+            case NoiseLevel.cLookAround:
+            case NoiseLevel.cMoveToPointInterst:
+            {
+                SetNavMeshDestination(mSoundDirectionComponent.PointofInterest, mNosieReactionMoveToPointInterstSpeed);
+                break;
+            }
 
+            case NoiseLevel.cMoveToPointInterstQuickly:
+            {
+                SetNavMeshDestination(mSoundDirectionComponent.PointofInterest, mNosieReactionMoveToPointInterstQuicklySpeed);
+                break;
+            }
+        }
         mCurrentTargetPos = mSoundDirectionComponent.PointofInterest;
-        mNavMeshAgent.destination = mCurrentTargetPos;
+        SetNavMeshDestination(mCurrentTargetPos, mNosieReactionMoveToPointInterstSpeed);
     }
 
     private void SetNavMeshDestination(Vector3 target_pos, float move_speed)
     {
-        
+        mNavMeshAgent.destination = target_pos;
+        mNavMeshAgent.speed = move_speed;
     }
 
     //*********************************************************************************************
