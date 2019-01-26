@@ -16,6 +16,7 @@ public class Mother : MonoBehaviour
     private Vector3 mCurrentTargetPos = Vector3.zero;
     private Dictionary<int, Vector3> mTargetPoints = new Dictionary<int, Vector3>();
     private Counter mTargetReachedStopCounter;
+    //private tig
 
     //State
     public enum MoveState
@@ -24,7 +25,8 @@ public class Mother : MonoBehaviour
         cOrderPatrol,        //目標点を順番に
         cRandomPatrol,       //目標点をランダムに
         cToTarget,           //目的の場所へ
-        cVigilance           //警戒
+        cVigilance,          //警戒
+        cFindPlayer          //プレイヤー発見
     }
     public MoveState mCurrentMoveState = MoveState.cOrderPatrol;
     private int mOrderIndex = 0;
@@ -120,6 +122,11 @@ public class Mother : MonoBehaviour
                 break;
             }
 
+            case MoveState.cFindPlayer:
+            {
+                break;
+            }
+
             default:
             {
                 break;
@@ -153,6 +160,11 @@ public class Mother : MonoBehaviour
             }
 
             case MoveState.cVigilance:
+            {
+                break;
+            }
+
+            case MoveState.cFindPlayer:
             {
                 break;
             }
@@ -214,6 +226,14 @@ public class Mother : MonoBehaviour
         mOrderIndex = mOrderIndex >= mTargetPoints.Count ? 0 : mOrderIndex;
 
         return mTargetPoints[mOrderIndex];
+    }
+
+    private bool IsFindPlayer()
+    {
+
+
+
+        return false;
     }
 
     //*********************************************************************************************
