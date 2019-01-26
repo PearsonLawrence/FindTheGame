@@ -49,17 +49,17 @@ public class ImageState : MonoBehaviour
 
     }
 
-    public virtual void LightUp()
+    public void LightUp()
     {
         ThisImage.color = new Color(albedo_LightUp / 255f, albedo_LightUp / 255f, albedo_LightUp / 255f);
     }
 
-    public virtual void LightDown()
+    public void LightDown()
     {
         ThisImage.color = new Color(albedo_LightDown / 255f, albedo_LightDown / 255f, albedo_LightDown / 255f);
     }
 
-    public void StateUpdate(int imageNo)
+    public virtual void StateUpdate(int imageNo)
     {
         if (imageNo > imageList.Count)
             return;
