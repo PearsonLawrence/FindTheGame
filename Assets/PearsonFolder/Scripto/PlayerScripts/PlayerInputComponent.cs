@@ -22,7 +22,7 @@ public class PlayerInputComponent : MonoBehaviour
 
     public void UpdateInput()
     {
-        Sprinting = Input.GetKey(KeyCode.LeftShift);
+        //Sprinting = Input.GetKey(KeyCode.LeftShift);
         Crawling = Input.GetKey(KeyCode.C);
 
 

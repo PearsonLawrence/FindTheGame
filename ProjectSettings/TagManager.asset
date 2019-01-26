@@ -3,8 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - TargetPoint
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -14,14 +13,9 @@ TagManager:
   - UI
   - 
   - 
-  - PostProcessing
-<<<<<<< HEAD
   - 
-  - FieldObject
-=======
-  - noise
   - 
->>>>>>> 154e64eaa3cbae7f7aff2446f362f75c34762894
+  - 
   - 
   - 
   - 

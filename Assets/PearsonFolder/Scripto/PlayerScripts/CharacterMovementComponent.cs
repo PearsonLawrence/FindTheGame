@@ -22,6 +22,8 @@ public class CharacterMovementComponent : MonoBehaviour
 
     public Light VisionLight;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -90,6 +92,7 @@ public class CharacterMovementComponent : MonoBehaviour
     private void Update()
     {
         UpdateSpeedVariables();
+        Debug.Log(RB.velocity.magnitude);
     }
 
     private void FixedUpdate()
@@ -97,5 +100,17 @@ public class CharacterMovementComponent : MonoBehaviour
         DoMouseLook(InputComponent);
         DoMovement(InputComponent, RB, CurrentAcceleration, CurrentMaxSpeed);
     }
-    
+
+    public void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("CollideSound"))
+        {
+            if(RB.velocity.magnitude > .5f)
+            {
+                GameObject Temp = Instantiate(collision.gameObject.GetComponent<CollisionSoundSpawn>().NoisePrefab, transform.position, Quaternion.identity);
+                Temp.GetComponent<NoiseComponent>().NoiseLevel = 4;
+            }
+        }
+    }
+
 }
