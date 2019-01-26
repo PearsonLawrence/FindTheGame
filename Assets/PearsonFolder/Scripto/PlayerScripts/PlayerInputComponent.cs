@@ -31,7 +31,7 @@ public class PlayerInputComponent : MonoBehaviour
         HorzVertIP.y = 0;
 
         CurrentJoyStickPosition.x = Input.GetAxisRaw("RJXAxis");
-        CurrentJoyStickPosition.y = Input.GetAxisRaw("RJYAxis");
+        CurrentJoyStickPosition.z = Input.GetAxisRaw("RJYAxis");
         Debug.Log(CurrentJoyStickPosition);
 
         CurrentMousePosition = Input.mousePosition;
