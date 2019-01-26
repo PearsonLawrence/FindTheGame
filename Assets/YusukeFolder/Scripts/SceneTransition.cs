@@ -9,10 +9,10 @@ public class SceneTransition : MonoBehaviour
     public string scene;
     public bool isUnlock;
 
-    void Start()
-    {
-        Debug.Log(scene);
-    }
+    //void Start()
+    //{
+    //    Debug.Log(scene);
+    //}
 
     // Update is called once per frame
     void Update()
@@ -23,8 +23,9 @@ public class SceneTransition : MonoBehaviour
         }
     }
 
-    private void LoadScene()
+    public void LoadScene()
     {
-        SceneManager.LoadScene(scene);
+        if (scene.Length > 0)
+            SceneManager.LoadScene(scene);
     }
 }
