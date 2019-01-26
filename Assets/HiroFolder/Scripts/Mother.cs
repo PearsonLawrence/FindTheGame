@@ -14,6 +14,7 @@ public class Mother : MonoBehaviour
     public float                        mNoiseReactionLookAroundTime = 5.0f;
     public float                        mNosieReactionMoveToPointInterstSpeed = 0.4f;
     public float                        mNosieReactionMoveToPointInterstQuicklySpeed = 1.0f;
+    public string                       mGameOverSceneName;
 
     private Rigidbody                   mRigidbody;
     private NavMeshAgent                mNavMeshAgent;
@@ -252,12 +253,26 @@ public class Mother : MonoBehaviour
     /// </summary>
     private void CheckNoise()
     {
-        if(mSoundDirectionComponent.CurrentNoiseStress > 0.0f)
-        {
-            mOldMoveState = mCurrentMoveState;
-            mCurrentMoveState = MoveState.cNoiseReaction;
-            mDoingNoiseLevelAction = (NoiseLevel)mSoundDirectionComponent.CurrentNoiseLevel;
-        }
+        //if(mSoundDirectionComponent.CurrentNoiseStress > 0.0f)
+        //{
+        //    mOldMoveState = mCurrentMoveState;
+        //    mCurrentMoveState = MoveState.cNoiseReaction;
+        //    mDoingNoiseLevelAction = (NoiseLevel)mSoundDirectionComponent.CurrentNoiseLevel;
+        //    switch(mDoingNoiseLevelAction)
+        //    {
+        //        case NoiseLevel.cStop:
+        //        {
+        //            mNoiseReactionCounter = new Counter(mNoseReactionStopTime, -1.0f);
+        //            break;
+        //        }
+        //        case NoiseLevel.cLookAround:
+        //        {
+        //            mNoiseReactionCounter = new Counter(mNoiseReactionLookAroundTime, -1.0f);
+        //            break;
+        //        }
+        //
+        //    }
+        //}
     }
 
     private void NoiseReaction()
@@ -271,27 +286,26 @@ public class Mother : MonoBehaviour
 
             case NoiseLevel.cStop:
             {
-                mNoiseReactionCounter = new Counter(mNoseReactionStopTime, -1.0f);
-                StartCoroutine(NoiseStopAction());
+                //StartCoroutine(NoiseStopAction());
+                StopAction();
                 break;
             }
 
             case NoiseLevel.cLookAround:
             {
-                mNoiseReactionCounter = new Counter(mNoiseReactionLookAroundTime, -1.0f);
-                StartCoroutine(NoiseLookAroundAction());
+                //StartCoroutine(NoiseLookAroundAction());
                 break;
             }
 
             case NoiseLevel.cMoveToPointInterst:
             {
-                StartCoroutine(NoiseMoveToPointInterstAction());
+                //StartCoroutine(NoiseMoveToPointInterstAction());
                 break;
             }
 
             case NoiseLevel.cMoveToPointInterstQuickly:
             {
-                StartCoroutine(NoiseMoveToPointInterstQuicklyAction());
+                //StartCoroutine(NoiseMoveToPointInterstQuicklyAction());
                 break;
             }
         }
@@ -306,6 +320,15 @@ public class Mother : MonoBehaviour
         return false;
     }
 
+    private void StopAction()
+    {
+        mNoiseReactionCounter.Update();
+        if(mNoiseReactionCounter.IsUnderZero())
+        {
+            mCurrentMoveState = MoveState.cOrderPatrol;
+        }
+    }
+
     //*********************************************************************************************
     //NoiseReactionFunctions
 
@@ -316,15 +339,18 @@ public class Mother : MonoBehaviour
             yield break;
         }
         mIsNoiseActionStopCoroutine = true;
-        while(!mNoiseReactionCounter.IsUnderZero())
+        mNoiseReactionCounter = new Counter(mNoseReactionStopTime, -1.0f);
+        while (!mNoiseReactionCounter.IsUnderZero())
         {
             Debug.Log("Now noise reaction 'Stop' playing.");
             mNoiseReactionCounter.Update();
             yield return null;
         }
-        var current_state = mCurrentMoveState;
-        mCurrentMoveState = mOldMoveState;
-        mOldMoveState = current_state;
+        //var current_state = mCurrentMoveState;
+        //mCurrentMoveState = mOldMoveState;
+        //mOldMoveState = current_state;
+
+        mCurrentMoveState = MoveState.cOrderPatrol;
         mIsNoiseActionStopCoroutine = false;
         yield break;
     }
@@ -335,16 +361,18 @@ public class Mother : MonoBehaviour
             yield break;
         }
         mIsNoiseActionLookAroundCoroutine = true;
+        mNoiseReactionCounter = new Counter(mNoiseReactionLookAroundTime, -1.0f);
         while (!mNoiseReactionCounter.IsUnderZero())
         {
             Debug.Log("Now noise reaction 'LookAround' playing.");
             mNoiseReactionCounter.Update();
             yield return null;
         }
-        var current_state = mCurrentMoveState;
-        mCurrentMoveState = mOldMoveState;
-        mOldMoveState = current_state;
+        //var current_state = mCurrentMoveState;
+        //mCurrentMoveState = mOldMoveState;
+        //mOldMoveState = current_state;
 
+        mCurrentMoveState = MoveState.cOrderPatrol;
         mIsNoiseActionLookAroundCoroutine = false;
         yield break;
     }
@@ -369,10 +397,11 @@ public class Mother : MonoBehaviour
             ++infinity_check;
             yield return null;
         }
-        var current_state = mCurrentMoveState;
-        mCurrentMoveState = mOldMoveState;
-        mOldMoveState = current_state;
+        //var current_state = mCurrentMoveState;
+        //mCurrentMoveState = mOldMoveState;
+        //mOldMoveState = current_state;
 
+        mCurrentMoveState = MoveState.cOrderPatrol;
         mIsNoiseActionMoveToPointInterstCoroutine = false;
         yield break;
     }
@@ -397,10 +426,11 @@ public class Mother : MonoBehaviour
             ++infinity_check;
             yield return null;
         }
-        var current_state = mCurrentMoveState;
-        mCurrentMoveState = mOldMoveState;
-        mOldMoveState = current_state;
+        //var current_state = mCurrentMoveState;
+        //mCurrentMoveState = mOldMoveState;
+        //mOldMoveState = current_state;
 
+        mCurrentMoveState = MoveState.cOrderPatrol;
         mIsNoiseActionMoveToPointInterstQuicklyCoroutine = false;
         yield break;
     }
