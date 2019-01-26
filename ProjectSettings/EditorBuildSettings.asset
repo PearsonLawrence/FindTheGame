@@ -8,4 +8,13 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/YusukeFolder/Scenes/TitleScene.unity
+    guid: e434e71d37a085e45b522931cbaa2a01
+  - enabled: 1
+    path: Assets/YusukeFolder/Scenes/GameClear.unity
+    guid: fbef13bf4f686bc4e964061eb5395dfd
+  - enabled: 1
+    path: Assets/YusukeFolder/Scenes/GameOverScene.unity
+    guid: 066039a1b79610a43a273ed9dcfe1935
   m_configObjects: {}
