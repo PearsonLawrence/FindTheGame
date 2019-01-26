@@ -18,7 +18,7 @@ public class Mother : MonoBehaviour
     private Counter mTargetReachedStopCounter;
 
     //State
-    private enum MoveState
+    public enum MoveState
     {
         cNone,
         cOrderPatrol,        //目標点を順番に
@@ -26,14 +26,13 @@ public class Mother : MonoBehaviour
         cToTarget,           //目的の場所へ
         cVigilance           //警戒
     }
-    private MoveState mCurrentMoveState;
+    public MoveState mCurrentMoveState = MoveState.cOrderPatrol;
     private int mOrderIndex = 0;
 
     private const float cReachDistance = 2.0f;
 
     //*********************************************************************************************
     //Unityデフォルト関数
-
     // Start is called before the first frame update
     private void Start()
     {
@@ -55,10 +54,9 @@ public class Mother : MonoBehaviour
             var key = int.Parse(point.name);
             mTargetPoints.Add(key, point.transform.position);
         }
-        //*** Stateに応じて初期の目標点をかえるように
-        var random_pos = CalcRandomPos();
-        mCurrentTargetPos = random_pos;
-        mCurrentMoveState = MoveState.cRandomPatrol;
+        //*** Stateに応じて初期の目標点をかえるように 分離できそう
+        InitMove();
+
 
         mTargetReachedStopCounter = new Counter(mTargetReachedStopTime, -1.0f);
     }
@@ -86,8 +84,8 @@ public class Mother : MonoBehaviour
                     mTargetReachedStopCounter.Update();
                     if(mTargetReachedStopCounter.IsUnderZero())
                     {
-
-                        //mCurrentTargetPos = CalcOrderPos();
+                        mTargetReachedStopCounter.InitCount(mTargetReachedStopTime);
+                        mCurrentTargetPos = CalcOrderPos();
                     }
                 }
                 mNavMeshAgent.destination = mCurrentTargetPos;
@@ -107,7 +105,6 @@ public class Mother : MonoBehaviour
                         mCurrentTargetPos = CalcRandomPos();
                     }
                 }
-
                 mNavMeshAgent.destination = mCurrentTargetPos;
 
                 break;
@@ -129,6 +126,44 @@ public class Mother : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// 移動初期化
+    /// </summary>
+    private void InitMove()
+    {
+        switch (mCurrentMoveState)
+        {
+            case MoveState.cOrderPatrol:
+            {
+                mCurrentTargetPos = mTargetPoints[mOrderIndex];
+                break;
+            }
+
+            case MoveState.cRandomPatrol:
+            {
+                var random_pos = CalcRandomPos();
+                mCurrentTargetPos = random_pos;
+                break;
+            }
+
+            case MoveState.cToTarget:
+            {
+                break;
+            }
+
+            case MoveState.cVigilance:
+            {
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
+        }
+    }
+
 
     /// <summary>
     /// 移動
@@ -173,10 +208,15 @@ public class Mother : MonoBehaviour
         return target_pos;
     }
     
-    //private Vector3 CalcOrderPos()
-    //{
-    //    if(tra)
-    //}
+    private Vector3 CalcOrderPos()
+    {
+        ++mOrderIndex;
+        mOrderIndex = mOrderIndex >= mTargetPoints.Count ? 0 : mOrderIndex;
+
+        return mTargetPoints[mOrderIndex];
+    }
+
+    //*********************************************************************************************
 
     /// <summary>
     /// 時間を計るカウンター
@@ -219,5 +259,12 @@ public class Mother : MonoBehaviour
         {
             return mCount < 0.0f;
         }
+    }
+
+    //*********************************************************************************************
+    //デバッグ表示
+
+    private void OnDrawGizmos()
+    {
     }
 }
