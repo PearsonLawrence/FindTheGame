@@ -55,7 +55,8 @@ public class CharacterMovementComponent : MonoBehaviour
     {
         if (IP.MainCamera != null)
         {
-            if (IP.CurrentJoyStickPosition == Vector3.zero)
+            Vector3 LastForward = transform.forward ;
+            if (Input.GetAxisRaw("Mouse X") != 0 || Input.GetAxisRaw("Mouse Y") != 0)
             {
                 RaycastHit hit = MathLib.RaycastFromScreenPoint(IP.CurrentMousePosition, IP.MainCamera);
 
@@ -63,15 +64,23 @@ public class CharacterMovementComponent : MonoBehaviour
                 Dir.y = 0;
 
                 transform.forward = Vector3.Lerp(transform.forward, Dir, PlayerTurnSpeed * Time.deltaTime);
-
-                VisionLight.spotAngle = 130 - RB.angularVelocity.magnitude; ;
+                LastForward = transform.forward;
                 Debug.Log(RB.angularVelocity);
+            }
+            else if((InputComponent.CurrentJoyStickPosition.x > .1f || InputComponent.CurrentJoyStickPosition.x < -.1f) || (InputComponent.CurrentJoyStickPosition.y > .1f || InputComponent.CurrentJoyStickPosition.y < -.1f))
+            {
+                Vector3 JoysticPosition = transform.position + (InputComponent.CurrentJoyStickPosition * 20);
+                Vector3 Dir = (transform.position - JoysticPosition).normalized;
+                Dir.y = 0;
+                Dir.Normalize();
+                transform.forward = Vector3.Lerp(transform.forward, Dir, PlayerTurnSpeed * Time.deltaTime);
+                LastForward = transform.forward;
             }
             else
             {
-                Vector3 Dir = Vector3.Normalize(IP.CurrentJoyStickPosition * 100) + transform.position;
-                transform.forward = Dir;
+                 transform.forward = LastForward;
             }
+            
         }
         else
         {
