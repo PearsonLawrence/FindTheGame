@@ -30,9 +30,14 @@ public class FootStepComponent : MonoBehaviour
     {
         RaycastHit hit;
 
-
-
+        
         Physics.Raycast(transform.position, -transform.up, out hit, 10.0f);
+
+        if(hit.collider.CompareTag("Wood"))
+        {
+
+        }
+
     }
 
     public void SpawnFootstep()
