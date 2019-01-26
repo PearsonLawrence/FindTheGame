@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 0c4936f9513b9154d8ef0f2a1f6dab4d
+=======
+<<<<<<< HEAD
+guid: a0d7fd822fe6de54da6175664beb1a0b
+=======
+guid: 01b884ba01d712b419a24afd8267bcc8
+>>>>>>> hiro
+>>>>>>> 154e64eaa3cbae7f7aff2446f362f75c34762894
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
