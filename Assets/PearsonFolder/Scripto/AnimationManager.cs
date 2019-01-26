@@ -17,6 +17,8 @@ public class AnimationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        anim.SetFloat("speed", RB.velocity.magnitude);
+        Vector3 result = transform.InverseTransformDirection(RB.velocity);
+        anim.SetFloat("yspeed", result.y);
+        anim.SetFloat("xspeed", result.x);
     }
 }
