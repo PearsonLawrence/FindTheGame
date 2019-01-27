@@ -37,11 +37,19 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+<<<<<<< HEAD
         m_Scale: {x: 3, y: 5}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 4722d2f9fc204c449a028755f19f3d10, type: 3}
         m_Scale: {x: 3, y: 5}
+=======
+        m_Scale: {x: 4, y: 4}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 4722d2f9fc204c449a028755f19f3d10, type: 3}
+        m_Scale: {x: 4, y: 4}
+>>>>>>> mutsuki
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
