@@ -10,18 +10,24 @@ public class UIManager : MonoBehaviour
     public GameObject SoundImage;
     public GameObject GameOverImage;
     public GameObject GameClearImage;
+    public GameObject GameBoyImageState;
+
 
     private ImageState LightImageState;
     private ImageState BoyImageState;
     private ImageState SoundImageState;
-
     [SerializeField]
     private bool _isInLight = false;
     [SerializeField]
     private int _boyHeartLevel = 0;
     [SerializeField]
     private int _soundLevel = 0;
+    [SerializeField]
+    private bool _isGetGame = false;
 
+    private PlayerManager Player;
+
+ 
 
     public bool IsInLight
     {
@@ -43,6 +49,21 @@ public class UIManager : MonoBehaviour
             {
                 BoyImageState.LightDown();
                 LightImageState.LightDown();
+            }
+        }
+    }
+
+ 
+
+    public bool GetedGameBoy
+    {
+        get { return _isGetGame; }
+        set
+        {
+            if (PlayerManager.HasGame)
+            {
+                GameBoyImageState.SetActive(true);
+                _isGetGame = value;
             }
         }
     }
@@ -90,6 +111,8 @@ public class UIManager : MonoBehaviour
         IsInLight = false;
         BoyHeartLevel = 0;
         SoundLevel = 0;
+
+        Player = GameObject.FindObjectOfType<PlayerManager>();
     }
 
     private int RangePositivInt(int value, int maxValue)
@@ -114,6 +137,8 @@ public class UIManager : MonoBehaviour
         ST.scene = "GameOverScene";
         ST.LateLoadScene(2.0f);
     }
+
+   
 
     public void GameClear()
     {
