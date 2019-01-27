@@ -8,27 +8,31 @@ public class Mother : MonoBehaviour
     //*********************************************************************************************
     //メンバ変数
 
-    public float                        mMoveSpeed = 1.0f;
+    public float                        mMoveSpeed = 3.5f;
 
     [Space(10)]
     public float                        mTargetReachedStopTime = 1.0f;
+    public float                        mLookAroundTime = 1.0f;
 
     [Space(10)]
     public float                        mNoiseReactionStopTime = 1.5f;
     public float                        mNoiseReactionLookAroundTime = 5.0f;
-    public float                        mNosieReactionMoveToPointInterstSpeed = 1.0f;
-    public float                        mNosieReactionMoveToPointInterstQuicklySpeed = 2.0f;
-
-    [Space(10)]
-    public string                       mGameOverSceneName;
+    public float                        mNosieReactionMoveToPointInterstSpeed = 3.5f;
+    public float                        mNosieReactionMoveToPointInterstQuicklySpeed = 5.0f;
 
     private Rigidbody                   mRigidbody;
     private NavMeshAgent                mNavMeshAgent;
+    private Animator                    mMomAnimator;
     private SoundDetectionComponent     mSoundDirectionComponent;
     private Vector3                     mCurrentTargetPos = Vector3.zero;
     private Dictionary<int, Vector3>    mTargetPoints = new Dictionary<int, Vector3>();
     private Counter                     mTargetReachedStopCounter;
-    private Counter                     mNoiseReactionCounter;
+    private Counter                     mNoiseReactionCounter = new Counter(0.0f, 0.0f);
+    private SoundFootStep               mSoundFootStep;
+
+    private Vector3                     mOldPos;
+    private Counter                     mLookAroundCounter;
+    private Vector3                     mCurrentLookDir;
 
     //NoiseLevel
     public enum NoiseLevel
@@ -39,7 +43,8 @@ public class Mother : MonoBehaviour
         cMoveToPointInterst = 3,
         cMoveToPointInterstQuickly = 4
     }
-    private NoiseLevel mDoingNoiseLevelAction = NoiseLevel.cNone;
+    [Space(10)]
+    public NoiseLevel mDoingNoiseLevelAction = NoiseLevel.cNone;
 
     //State
     public enum MoveState
@@ -50,7 +55,7 @@ public class Mother : MonoBehaviour
         cNoiseReaction,      //音に応じたリアクション
         cFindPlayer          //プレイヤー発見
     }
-    private MoveState mCurrentMoveState = MoveState.cOrderPatrol;
+    public MoveState mCurrentMoveState = MoveState.cOrderPatrol;
     private int mOrderIndex = 0;
 
     private const float cReachDistance = 2.0f;
@@ -75,6 +80,16 @@ public class Mother : MonoBehaviour
         {
             Debug.LogError("Can't find sound direction component.");
         }
+        mMomAnimator = transform.GetChild(0).GetComponent<Animator>();
+        if(!mMomAnimator)
+        {
+            Debug.LogError("Can't find Animator component.");
+        }
+        mSoundFootStep = GetComponent<SoundFootStep>();
+        if (!mMomAnimator)
+        {
+            Debug.LogError("Can't find Sound foot step component.");
+        }
 
         //目標点リストの作成
         var points = GameObject.FindGameObjectsWithTag("TargetPoint");
@@ -87,13 +102,29 @@ public class Mother : MonoBehaviour
         InitMove();
 
         mTargetReachedStopCounter = new Counter(mTargetReachedStopTime, -1.0f);
+        mLookAroundCounter = new Counter(mLookAroundTime, -1.0f);
     }
 
     // Update is called once per frame
     private void Update()
     {
+        if(Vector3.Distance(transform.position, mOldPos) > 0.01f)
+        {
+            var move_speed = Vector3.Distance(transform.position, mOldPos);
+            mMomAnimator.SetFloat("MoveSpeed", move_speed);
+
+            mSoundFootStep.MoveSpeed = move_speed;
+        }
+        else
+        {
+            mMomAnimator.SetFloat("MoveSpeed", 0.0f);
+            LookAround();
+        }
+
         CheckNoise();
         WatchNowState();
+
+        mOldPos = transform.position;
     }
 
     //*********************************************************************************************
@@ -226,7 +257,10 @@ public class Mother : MonoBehaviour
         direction.y = 0.0f;
         direction.Normalize();
 
-        transform.LookAt(transform.position + direction);
+        var current_dir = transform.forward;
+        var next_dir = Vector3.Lerp(current_dir, direction, 0.2f);
+
+        transform.LookAt(transform.position + next_dir);
     }
 
     /// <summary>
@@ -271,8 +305,18 @@ public class Mother : MonoBehaviour
         switch(mDoingNoiseLevelAction)
         {
             case NoiseLevel.cNone:
+            {
+                break;
+            }
             case NoiseLevel.cStop:
+            {
+                mCurrentTargetPos = transform.position;
+                break;
+            }
             case NoiseLevel.cLookAround:
+            {
+                break;
+            }
             case NoiseLevel.cMoveToPointInterst:
             {
                 SetNavMeshDestination(mSoundDirectionComponent.PointofInterest, mNosieReactionMoveToPointInterstSpeed);
@@ -285,14 +329,39 @@ public class Mother : MonoBehaviour
                 break;
             }
         }
-        mCurrentTargetPos = mSoundDirectionComponent.PointofInterest;
-        SetNavMeshDestination(mCurrentTargetPos, mNosieReactionMoveToPointInterstSpeed);
     }
 
+    /// <summary>
+    /// NavMesh移動
+    /// </summary>
+    /// <param name="target_pos"></param>
+    /// <param name="move_speed"></param>
     private void SetNavMeshDestination(Vector3 target_pos, float move_speed)
     {
         mNavMeshAgent.destination = target_pos;
         mNavMeshAgent.speed = move_speed;
+    }
+
+    /// <summary>
+    /// 周囲を見渡す
+    /// </summary>
+    private void LookAround()
+    {
+        if (mLookAroundCounter.IsUnderZero())
+        {
+            var rand_pos = Random.Range(0.0f, 360.0f);
+            var look_pos_offset = new Vector3(Mathf.Cos(rand_pos), 0.0f, Mathf.Sin(rand_pos));
+
+            mCurrentLookDir = transform.position + look_pos_offset * 100;
+            mLookAroundCounter = new Counter(mLookAroundTime, -1.0f);
+        }
+        Rotate(mCurrentLookDir);
+        mLookAroundCounter.Update();
+    }
+
+    private void CheckFloorType()
+    {
+
     }
 
     //*********************************************************************************************

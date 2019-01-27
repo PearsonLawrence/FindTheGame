@@ -41,11 +41,7 @@ public class MotherSight : MonoBehaviour
             {
                 mWatchablePlayer = true;
                 Debug.Log("Find Player!");
-                if(transform.parent.GetComponent<Mother>().mGameOverSceneName == "")
-                {
-                    Debug.LogError("Set GameOver scene name in Mother AI.");
-                }
-                SceneManager.LoadScene(transform.parent.GetComponent<Mother>().mGameOverSceneName);
+                //*** UIManager のGameOver関数を呼ぶ
             }
             else
             {
