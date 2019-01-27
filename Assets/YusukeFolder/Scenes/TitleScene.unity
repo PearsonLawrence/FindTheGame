@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c7b50d019eb6c4f995a6f63c5b7783, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scene: GameOverScene
+  scene: PlayerTestScene
   isUnlock: 1
 --- !u!4 &480874418
 Transform:
