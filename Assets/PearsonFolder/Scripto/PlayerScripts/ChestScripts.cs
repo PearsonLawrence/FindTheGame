@@ -9,6 +9,8 @@ public class ChestScripts : MonoBehaviour, Iinteractable
 
     }
 
+    UIManager Manager;
+
     public void Interact(GameObject Owner)
     {
         PlayerManager temp = Owner.GetComponent<PlayerManager>();
@@ -16,7 +18,9 @@ public class ChestScripts : MonoBehaviour, Iinteractable
         {
             if (hasGame)
             {
-                temp.HasGame = hasGame;
+                PlayerManager.HasGame = hasGame;
+                Manager = GameObject.Find("UIManager").GetComponent<UIManager>();
+                Manager.GetedGameBoy = PlayerManager.HasGame;
 
             }
             if (CanHide)
@@ -31,9 +35,9 @@ public class ChestScripts : MonoBehaviour, Iinteractable
                 Owner.transform.position = transform.position;
                 Owner.transform.forward = transform.forward;
 
-                if(Manager.HasGame && IsGoal)
+                if(PlayerManager.HasGame && IsGoal)
                 {
-                    SceneManager.LoadScene("GameClear");
+                    GameObject.Find("UIManager").GetComponent<UIManager>().GameClear();
                 }
             }
 

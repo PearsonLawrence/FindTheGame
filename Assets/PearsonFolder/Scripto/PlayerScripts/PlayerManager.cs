@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
 
-    public bool HasGame;
+    public static bool HasGame;
+    public static bool IsInBed;
 
     public bool stressLevel;
 
@@ -16,6 +17,8 @@ public class PlayerManager : MonoBehaviour
     public bool isHiding;
 
     public GameObject viewLight;
+
+    private UIManager uim;
 
     public void StopHiding()
     {
@@ -38,5 +41,6 @@ public class PlayerManager : MonoBehaviour
     void Update()
     {
         
+       
     }
 }

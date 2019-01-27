@@ -5,15 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - TargetPoint
-<<<<<<< HEAD
+  - Tatami
   - Wood
-  - Tatami
-  - Bathroom
   - Carpet
-=======
-  - CollideSound
-  - Tatami
->>>>>>> hiro
+  - Bathroom
   layers:
   - Default
   - TransparentFX
@@ -24,13 +19,8 @@ TagManager:
   - 
   - 
   - 
-<<<<<<< HEAD
   - 
   - Mother
-=======
-  - 
-  - 
->>>>>>> mutsuki
   - 
   - 
   - 

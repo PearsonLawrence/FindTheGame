@@ -50,6 +50,8 @@ public class NoiseComponent : MonoBehaviour
         SoundDetectionComponent TempSoundDetect = other.GetComponent<SoundDetectionComponent>();
         if (TempSoundDetect)
         {
+            if (Owner == other.gameObject) return;
+
             if(TempSoundDetect.CurrentNoiseLevel < NoiseLevel)
             {
                 TempSoundDetect.CurrentNoiseLevel = NoiseLevel;

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AI;
 public class FootStepComponent : MonoBehaviour
 {
 
@@ -26,6 +26,9 @@ public class FootStepComponent : MonoBehaviour
     public float walkfrequency = 1;
     private float countdown;
     public AudioClip[] FootStepType;
+
+    NavMeshAgent agent;
+
     //0 wood 
     //1 tatami
     //2 bathroom
@@ -34,6 +37,7 @@ public class FootStepComponent : MonoBehaviour
     void Start()
     {
         RB = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
         CurrentFootPoint = FootPoint1;
     }
 
@@ -103,7 +107,11 @@ public class FootStepComponent : MonoBehaviour
     {
         countdown -= Time.deltaTime;
 
-        if(countdown <= 0 && RB.velocity != Vector3.zero)
+        
+
+        Vector3 CurrentVelocity = (agent != null) ? agent.velocity : RB.velocity;
+
+        if(countdown <= 0 && CurrentVelocity != Vector3.zero)
         {
             Step();
             countdown = walkfrequency;

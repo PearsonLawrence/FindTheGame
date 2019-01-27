@@ -113,7 +113,7 @@ public class Mother : MonoBehaviour
             var move_speed = Vector3.Distance(transform.position, mOldPos);
             mMomAnimator.SetFloat("MoveSpeed", move_speed);
 
-            mSoundFootStep.MoveSpeed = move_speed;
+            //mSoundFootStep.MoveSpeed = move_speed;
         }
         else
         {
@@ -295,7 +295,7 @@ public class Mother : MonoBehaviour
         }
         else
         {
-            mCurrentMoveState = MoveState.cOrderPatrol;
+            mCurrentMoveState = MoveState.cRandomPatrol;
         }
     }
 

@@ -10,10 +10,17 @@ public class MotherSight : MonoBehaviour
 
     public bool WatchablePlayer { get{ return mWatchablePlayer; } }
 
+    private UIManager mUiManager;
+
     // Start is called before the first frame update
     void Start()
     {
         mOwner = transform.parent.transform;
+        mUiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+        if(!mUiManager)
+        {
+            Debug.LogError("Can't find ui manager");
+        }
     }
 
     // Update is called once per frame
@@ -41,7 +48,8 @@ public class MotherSight : MonoBehaviour
             {
                 mWatchablePlayer = true;
                 Debug.Log("Find Player!");
-                //*** UIManager のGameOver関数を呼ぶ
+
+                GameObject.Find("UIManager").GetComponent<UIManager>().GameOver();
             }
             else
             {
