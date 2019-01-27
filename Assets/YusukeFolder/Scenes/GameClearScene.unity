@@ -294,7 +294,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 304517f5293df8748935ca17b9a6feaa, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e139844cdf7062a45921c5aa509f2cfa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -328,7 +328,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1763174366
 RectTransform:
   m_ObjectHideFlags: 0
@@ -343,10 +343,10 @@ RectTransform:
   m_Father: {fileID: 2093073962}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0.000061035156, y: -201.00002}
-  m_SizeDelta: {x: 0, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -50}
+  m_SizeDelta: {x: 0, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1763174367
 MonoBehaviour:
@@ -374,14 +374,16 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
-    m_MaxSize: 80
+    m_MaxSize: 100
     m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: -- Please Press Any Key --
+  m_Text: "Find The Game\r\n\r\nCreated by\r\n\r\nHirotake Sawaguchi\r\nMustuki Yoshitake\r\nOmelian
+    \   Jeffrey\r\nPearson Lawrence\r\nRemy Clark\r\nTakuya Sakamoto\r\nYusuke Kobayashi\r\n\r\nThank
+    you for playing!!"
 --- !u!222 &1763174368
 CanvasRenderer:
   m_ObjectHideFlags: 0
