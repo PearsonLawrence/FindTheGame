@@ -27,6 +27,7 @@ public class PlayerManager : MonoBehaviour
         rb.useGravity = true;
         isHiding = false;
         //viewLight.SetActive(true);
+        GameObject.Find("UIManager").GetComponent<UIManager>().BoyHeartLevel = 0;
         gameObject.GetComponent<CapsuleCollider>().enabled = true;
     }
 

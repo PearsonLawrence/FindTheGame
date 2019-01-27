@@ -34,8 +34,8 @@ public class ChestScripts : MonoBehaviour, Iinteractable
                 Owner.GetComponent<CapsuleCollider>().enabled = false;
                 Owner.transform.position = transform.position;
                 Owner.transform.forward = transform.forward;
-
-                if(PlayerManager.HasGame && IsGoal)
+                GameObject.Find("UIManager").GetComponent<UIManager>().BoyHeartLevel = 3;
+                if (PlayerManager.HasGame && IsGoal)
                 {
                     GameObject.Find("UIManager").GetComponent<UIManager>().GameClear();
                 }

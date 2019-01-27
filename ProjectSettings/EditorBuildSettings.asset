@@ -18,9 +18,9 @@ EditorBuildSettings:
     path: Assets/YusukeFolder/Scenes/GameOverScene.unity
     guid: 066039a1b79610a43a273ed9dcfe1935
   - enabled: 1
-    path: Assets/PearsonFolder/Scene 1/PlayerTestScene.unity
-    guid: bc5928aec09ec264f9733a2fdc17a3a4
+    path: Assets/PearsonFolder/Scene 1/firstmap 2.unity
+    guid: d33c6585bdc94ce499afd795e60826f7
   - enabled: 1
-    path: Assets/YusukeFolder/Scenes/MainSceneUI.unity
+    path: Assets/YusukeFolder/Scenes/mainSceneUI.unity
     guid: 00d66f192827e8f41bfce20e27a6156f
   m_configObjects: {}
