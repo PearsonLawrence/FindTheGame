@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 730317996431353271}
   - component: {fileID: 730317996431353225}
   - component: {fileID: 730317997748886123}
+  - component: {fileID: 730317996431353267}
   m_Layer: 10
   m_Name: Mom
   m_TagString: Untagged
@@ -49,16 +50,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a15541e5e84be744e8fbde9712c023a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mMoveSpeed: 0.4
+  mMoveSpeed: 3.5
   mTargetReachedStopTime: 1
-  mNoseReactionStopTime: 1.5
+  mLookAroundTime: 1
+  mNoiseReactionStopTime: 1.5
   mNoiseReactionLookAroundTime: 5
-  mNosieReactionMoveToPointInterstSpeed: 0.4
-  mNosieReactionMoveToPointInterstQuicklySpeed: 1
-  mGameOverSceneName: GameOverScene
+  mNosieReactionMoveToPointInterstSpeed: 3.5
+  mNosieReactionMoveToPointInterstQuicklySpeed: 5
   mDoingNoiseLevelAction: 0
   mCurrentMoveState: 1
-  mOldMoveState: 1
 --- !u!136 &730317996431353270
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -128,6 +128,45 @@ MonoBehaviour:
   CurrentNoiseStress: 0
   StressDecreaseModifier: 0.2
   PointofInterest: {x: 0, y: 0, z: 0}
+--- !u!114 &730317996431353267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730317996431353266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ca423225eba9994d88c392d61c1aac9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mNoiseSpeher: {fileID: 2848967423695760804, guid: 3b585d2ffc1dbd8458e5e8c631d6e42a,
+    type: 3}
+  mNoiseLevelTatami: 1
+  mDecreaseSpeedTatami: 0.5
+  mExpandSpeedTatami: 5
+  mMaxSizeTatami: 5
+  mTatamiSE: {fileID: 0}
+  mNoiseLevelCarpet: 1
+  mDecreaseSpeedCarpet: 0.5
+  mExpandSpeedCarpet: 5
+  mMaxSizeCarpet: 5
+  mCarpetSE: {fileID: 0}
+  mNoiseLevelFlooring: 2
+  mDecreaseSpeedFlooring: 0.5
+  mExpandSpeedFlooring: 5
+  mMaxSizeFlooring: 10
+  mFlooringSE: {fileID: 0}
+  mNoiseLevelBathRoom: 3
+  mDecreaseSpeedBathRoom: 0.5
+  mExpandSpeedBathRoom: 5
+  mMaxSizeBathRoom: 20
+  mBathRoomSE: {fileID: 0}
+  mNoiseLevelOldFlooring: 4
+  mDecreaseSpeedOldFlooring: 0.5
+  mExpandSpeedOldFlooring: 5
+  mMaxSizeOldFlooring: 30
+  mOldFlooringSE: {fileID: 0}
 --- !u!1 &730317997576214781
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,8 +177,9 @@ GameObject:
   m_Component:
   - component: {fileID: 730317997576214780}
   - component: {fileID: 730317997576214783}
+  - component: {fileID: 237443613}
   m_Layer: 10
-  m_Name: aooni
+  m_Name: MomSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,13 +192,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 730317997576214781}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 730317996431353268}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!212 &730317997576214783
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -176,7 +216,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 7d729dcd418e5c34dbe86ade382d9a47, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -196,17 +236,36 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 663667d291fd2b84282501d2a1ca8c83, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 45d119590016ae04ab1b80626ccfa5c8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.04, y: 2.32}
+  m_Size: {x: 2.5, y: 2.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &237443613
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730317997576214781}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d5c802cd195d581408e7a55cc9bcf8f4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!64 &730317997784285196
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -258,7 +317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.507
+      value: -0.4700002
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
       propertyPath: m_LocalRotation.x
@@ -294,18 +353,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
       propertyPath: m_LocalScale.x
-      value: 5
+      value: 4.0133514
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 4.0133514
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
       propertyPath: m_LocalScale.z
-      value: 5
+      value: 4.0133514
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2300000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
+    - target: {fileID: 2300000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97725d8c7a0c96e48a8d0d324cd5f91e, type: 3}
 --- !u!1 &730317997784285195 stripped
 GameObject:
