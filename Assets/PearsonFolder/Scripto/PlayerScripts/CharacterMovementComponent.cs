@@ -97,8 +97,11 @@ public class CharacterMovementComponent : MonoBehaviour
 
     private void FixedUpdate()
     {
-        DoMouseLook(InputComponent);
-        DoMovement(InputComponent, RB, CurrentAcceleration, CurrentMaxSpeed);
+        if (!InputComponent.Manager.isHiding)
+        {
+            DoMouseLook(InputComponent);
+            DoMovement(InputComponent, RB, CurrentAcceleration, CurrentMaxSpeed);
+        }
     }
 
     public void OnCollisionEnter(Collision collision)

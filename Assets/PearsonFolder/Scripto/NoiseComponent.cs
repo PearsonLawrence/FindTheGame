@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class NoiseComponent : MonoBehaviour
 {
     public float NoiseLevel;
@@ -18,7 +18,9 @@ public class NoiseComponent : MonoBehaviour
 
     public ParticleSystem SoundWave;
 
-    
+    public AudioSource audiosource;
+
+    public  Image PictureSound;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,10 +33,15 @@ public class NoiseComponent : MonoBehaviour
     {
         spherecollider.radius += Time.deltaTime * ExpandSpeed;
         NoiseLevel -= Time.deltaTime * decreasespeed;
-
+        if(PictureSound)
+        {
+            PictureSound.color -= (PictureSound.color.a <= 0) ? new Color(0,0,0,0) : new Color(0,0,0,Time.deltaTime * .5f);
+        }
         if(NoiseLevel <= 0 || spherecollider.radius > MaxSize)
         {
-            Destroy(gameObject);
+            Destroy(gameObject,2);
+            spherecollider.radius = 0;
+
         }
     }
 

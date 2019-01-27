@@ -2,7 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInputComponent : MonoBehaviour
+public interface Iinteractable
+{
+    void Interact(GameObject Owner);
+
+    void Activate();
+}
+
+public class PlayerInputComponent : MonoBehaviour 
 {
     //horizontal axis and vertical axis stored input
     public Vector3 HorzVertIP;
@@ -13,6 +20,8 @@ public class PlayerInputComponent : MonoBehaviour
 
     public Camera MainCamera;
 
+    public PlayerManager Manager;
+
     public bool MouseLeft;
     public bool MouseRight;
 
@@ -20,21 +29,42 @@ public class PlayerInputComponent : MonoBehaviour
 
     public bool Crawling;
 
+    public void doInteract()
+    {
+        RaycastHit hit;
+
+        Physics.Raycast(transform.position, transform.forward, out hit, .75f);
+
+        Iinteractable temp = hit.collider.GetComponent<Iinteractable>();
+
+        if(temp != null)
+        {
+            temp.Interact(gameObject);
+        }
+    }
+
     public void UpdateInput()
     {
         //Sprinting = Input.GetKey(KeyCode.LeftShift);
-        Crawling = Input.GetKey(KeyCode.C);
+        if (!Manager.isHiding)
+        {
+            Crawling = Input.GetKey(KeyCode.C);
 
 
-        HorzVertIP.x = Input.GetAxisRaw("Horizontal");
-        HorzVertIP.z = Input.GetAxisRaw("Vertical");
-        HorzVertIP.y = 0;
+            HorzVertIP.x = Input.GetAxisRaw("Horizontal");
+            HorzVertIP.z = Input.GetAxisRaw("Vertical");
+            HorzVertIP.y = 0;
 
-        CurrentJoyStickPosition.x = Input.GetAxisRaw("RJXAxis");
-        CurrentJoyStickPosition.z = Input.GetAxisRaw("RJYAxis");
-        Debug.Log(CurrentJoyStickPosition);
-
-        CurrentMousePosition = Input.mousePosition;
+            CurrentJoyStickPosition.x = Input.GetAxisRaw("RJXAxis");
+            CurrentJoyStickPosition.z = Input.GetAxisRaw("RJYAxis");
+          
+            CurrentMousePosition = Input.mousePosition;
+            if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Fire1")) doInteract() ;
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Fire1")) Manager.StopHiding();
+        }
         MouseLeft = Input.GetMouseButton(0);
         MouseRight = Input.GetMouseButton(1);
     }
@@ -42,7 +72,7 @@ public class PlayerInputComponent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Manager = GetComponent<PlayerManager>();
     }
 
     // Update is called once per frame
